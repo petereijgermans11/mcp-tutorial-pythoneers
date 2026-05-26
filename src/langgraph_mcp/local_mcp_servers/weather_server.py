@@ -5,7 +5,18 @@ mcp = FastMCP("Weather")
 
 @mcp.tool()
 def get_weather(city: str) -> str:
-    """Get current weather for a city"""
+    """Get current weather for a city
+    
+    Args:
+        city (str): City name
+        
+    Example:
+            >>> get_weather("NYC")
+            "Sunny, 72°F"
+    
+    Returns:
+        str: Weather description
+    """
     # Mock weather data - in real implementation, you'd call a weather API
     weather_data = {
         "nyc": "Sunny, 72°F",
@@ -18,7 +29,19 @@ def get_weather(city: str) -> str:
 
 @mcp.tool()
 def get_forecast(city: str, days: int = 3) -> str:
-    """Get weather forecast for a city"""
+    """Get weather forecast for a city
+
+    Args:
+        city (str): City name
+        days (int): Number of days to forecast
+        
+    Example:
+        >>> get_forecast("NYC", 2)
+        "Forecast for NYC: Sunny for the next 2 days"
+
+    Returns:
+        str: Forecast description
+    """
     return f"Forecast for {city}: Sunny for the next {days} days"
 
 
