@@ -48,7 +48,7 @@ def create_assistant(llm_with_tools):
         content="""
 You are an Expert Developer Relations Engineer automating technical content creation using MCP tools.
 
-### WORKFLOW: Firecrawl → research_notes.md → slides.md → Git
+### WORKFLOW: Firecrawl → research_notes.md → Git
 
 ### TOOL RULES:
 
@@ -59,41 +59,12 @@ You are an Expert Developer Relations Engineer automating technical content crea
    - Only use firecrawl_scrape if description is insufficient (adds ~5-10 sec per scrape)
    - Write all findings to '/Users/petereijgermans/Desktop/mcp-tutorial-java-magazine/research_notes.md'
 
-2. SLIDEV GENERATION:
-   - File: '/Users/petereijgermans/Desktop/mcp-tutorial-java-magazine/my-slides/slides.md'
-   - MANDATORY STEPS:
-     a) Read research_notes.md using read_text_file to get ALL numbered items (e.g., "1. AI performance...", "2. Increase in AI...")
-     b) Use write_file (NOT edit_file) to COMPLETELY REPLACE slides.md - DELETE all old slides
-     c) Create slides.md with:
-        - Frontmatter (theme: '@slidev/theme-seriph', background, etc.) followed by '---'
-        - Cover slide: "# AI Trends 2025" followed by '---'
-        - TOC slide listing all numbered items followed by '---'
-        - ONE slide per numbered item: title from item, content is EXACT text from item
-        - CODE EXAMPLES: If user prompt mentions "code examples", "runnable code", "Python", "JavaScript", "developer-focused", or "demonstrates":
-          * Add code blocks to slides demonstrating the AI trend
-          * Use Slidev code syntax: ```python or ```javascript with proper highlighting
-          * Create practical, runnable examples that illustrate the trend
-          * Add code examples to AT LEAST 2-3 slides when code is requested
-          * Example code block: "\n```python\n# AI agent example\nfrom langchain import Agent\nagent = Agent()\nresult = agent.run('task')\n```\n"
-        - CRITICAL FORMATTING: layout: MUST be INSIDE the '---' markers on the SAME block, no empty lines
-        - Correct: "---\nlayout: default\n---\n\n# Slide Title\nContent here\n---"
-        - WRONG: "---\n\nlayout: default\n---" (empty line creates slide showing "layout: default")
-        - WRONG: "---\nlayout: default\n\n---" (empty line breaks frontmatter)
-        - Frontmatter format: "---\ntheme: '@slidev/theme-seriph'\nlayout: cover\n---\n\n# Title" (no empty lines inside --- markers)
-        - Each slide separated by '---', use layout: (cover, section, default, fact)
-        - Use 'layout: default' for slides with bullet lists (NOT 'layout: fact' - that's for single facts only)
-        - Avoid nested bullet points (sub-bullets) - use flat list with bold text for emphasis instead
-   - CRITICAL: If research_notes.md has 10 numbered items → create 10 content slides (plus cover + TOC)
-   - Example: "1. AI performance on benchmarks sharply improves." → Slide: "---\nlayout: default\n---\n\n# AI Performance on Benchmarks\nAI performance on benchmarks sharply improves.\n---"
-   - Example with code: "1. AI agents performing complex reasoning" → Slide: "---\nlayout: default\n---\n\n# AI Agents\nAI agents performing complex reasoning.\n\n```python\nfrom langchain import Agent\nagent = Agent(tools=[...])\nresult = agent.run('analyze data')\n```\n---"
-
-3. GIT:
+2. GIT:
    - Check git_status before git_add (exclude .DS_Store)
    - Only stage files, never commit to main
 
-4. STATE MANAGEMENT:
+3. STATE MANAGEMENT:
    - Filesystem is your memory - read files before editing
-   - Use write_file for slides.md (complete replacement), edit_file for research_notes.md (append)
                 """
     )
 
@@ -155,17 +126,17 @@ async def setup_langgraph_app():
     
         # External MCP package (installed via uv/npx)
     
-         "firecrawl-mcp": {
-          "command": "npx",
-          "args": [
-             "-y",
-             "firecrawl-mcp"
-            ],
-           "env": {
-              "FIRECRAWL_API_KEY": firecrawl_api_key
-            },
-            "transport": "stdio"
-        },
+        #  "firecrawl-mcp": {
+        #   "command": "npx",
+        #   "args": [
+        #      "-y",
+        #      "firecrawl-mcp"
+        #     ],
+        #    "env": {
+        #       "FIRECRAWL_API_KEY": firecrawl_api_key
+        #     },
+        #     "transport": "stdio"
+        # },
         
         "filesystem": {
             "command": "npx",
@@ -185,7 +156,11 @@ async def setup_langgraph_app():
             "transport": "stdio"
         },
         
-        
+         "office_word": {
+            "command": "uv",
+            "args": ["tool", "run", "--from", "office-word-mcp-server", "word_mcp_server"],
+            "transport": "stdio",
+        },
     
     }
 
