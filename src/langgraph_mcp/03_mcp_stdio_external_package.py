@@ -123,6 +123,11 @@ async def setup_langgraph_app():
             "args": [str(current_dir / "local_mcp_servers" / "math_server.py")],
             "transport": "stdio",
         },
+        "project": {
+            "command": "python",
+            "args": [str(current_dir / "local_mcp_servers" / "project_server.py")],
+            "transport": "stdio",
+        },
     
         # External MCP package (installed via uv/npx)
     
@@ -138,29 +143,29 @@ async def setup_langgraph_app():
         #     "transport": "stdio"
         # },
         
-        "filesystem": {
-            "command": "npx",
-            "args": [
-                "-y",
-                "@modelcontextprotocol/server-filesystem",
-                str(current_dir.parent.parent)  # Allow access to project root
-            ],
-            "transport": "stdio"
-        },
+        # "filesystem": {
+        #     "command": "npx",
+        #     "args": [
+        #         "-y",
+        #         "@modelcontextprotocol/server-filesystem",
+        #         str(current_dir.parent.parent)  # Allow access to project root
+        #     ],
+        #     "transport": "stdio"
+        # },
         
-        "git": {
-            "command": "uvx",
-            "args": [
-                "mcp-server-git"
-            ],
-            "transport": "stdio"
-        },
+        # "git": {
+        #     "command": "uvx",
+        #     "args": [
+        #         "mcp-server-git"
+        #     ],
+        #     "transport": "stdio"
+        # },
         
-         "office_word": {
-            "command": "uv",
-            "args": ["tool", "run", "--from", "office-word-mcp-server", "word_mcp_server"],
-            "transport": "stdio",
-        },
+        #  "office_word": {
+        #     "command": "uv",
+        #     "args": ["tool", "run", "--from", "office-word-mcp-server", "word_mcp_server"],
+        #     "transport": "stdio",
+        # },
     
     }
 

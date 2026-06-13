@@ -25,79 +25,85 @@ async def create_event_stream(
     last_printed_index = -1
     messages_printed = set()
 
-    async for event in langgraph_app.astream_events(
-        {"messages": [HumanMessage(content=user_input)]}, config=config
-    ):
-        event_type = event.get("event")
+    try:
+        async for event in langgraph_app.astream_events(
+            {"messages": [HumanMessage(content=user_input)]}, config=config
+        ):
+            event_type = event.get("event")
 
-        if event_type == "on_chat_model_start" and verbose:
-            run_id = event.get("run_id")
-            if run_id and run_id not in messages_printed:
-                messages_printed.add(run_id)
-                data = event.get("data", {})
-                input_data = data.get("input")
-                if isinstance(input_data, list):
-                    messages = input_data
-                elif isinstance(input_data, dict):
-                    messages = input_data.get("messages", [])
-                else:
-                    messages = data.get("messages", [])
+            if event_type == "on_chat_model_start" and verbose:
+                run_id = event.get("run_id")
+                if run_id and run_id not in messages_printed:
+                    messages_printed.add(run_id)
+                    data = event.get("data", {})
+                    input_data = data.get("input")
+                    if isinstance(input_data, list):
+                        messages = input_data
+                    elif isinstance(input_data, dict):
+                        messages = input_data.get("messages", [])
+                    else:
+                        messages = data.get("messages", [])
 
-                if messages and isinstance(messages, list):
-                    while (
-                        messages
-                        and len(messages) == 1
-                        and isinstance(messages[0], list)
-                    ):
-                        messages = messages[0]
-                    if messages and len(messages) > 0:
-                        _print_message_sequence(messages, skip_final_separator=True)
-                        last_printed_index = len(messages) - 1
+                    if messages and isinstance(messages, list):
+                        while (
+                            messages
+                            and len(messages) == 1
+                            and isinstance(messages[0], list)
+                        ):
+                            messages = messages[0]
+                        if messages and len(messages) > 0:
+                            _print_message_sequence(messages, skip_final_separator=True)
+                            last_printed_index = len(messages) - 1
 
-        if event_type == "on_chat_model_stream":
-            chunk = event["data"]["chunk"]
-            if hasattr(chunk, "content") and chunk.content:
-                yield chunk.content + " "
+            if event_type == "on_chat_model_stream":
+                chunk = event["data"]["chunk"]
+                if hasattr(chunk, "content") and chunk.content:
+                    yield chunk.content + " "
 
-        # Tool calls
-        if event_type == "on_tool_start":
-            tool_name = event.get("name", "tool")
-            tool_args = event.get("data", {}).get("input", {})
-            # Use run_id to deduplicate tool calls
-            tool_run_id = event.get("run_id")
-            if tool_run_id and tool_run_id not in tool_calls_shown:
-                tool_calls_shown.add(tool_run_id)
-                yield f"\n__TOOL_CALL__:Calling tool '{tool_name}' with args {tool_args}\n"
+            # Tool calls
+            if event_type == "on_tool_start":
+                tool_name = event.get("name", "tool")
+                tool_args = event.get("data", {}).get("input", {})
+                # Use run_id to deduplicate tool calls
+                tool_run_id = event.get("run_id")
+                if tool_run_id and tool_run_id not in tool_calls_shown:
+                    tool_calls_shown.add(tool_run_id)
+                    yield f"\n__TOOL_CALL__:Calling tool '{tool_name}' with args {tool_args}\n"
 
-        if event_type == "on_tool_end":
-            tool_name = event.get("name", "tool")
-            # LangGraph on_tool_end events have run_id at the top level (unique UUID per tool call)
-            tool_id = event.get("run_id")
-            tool_output = event.get("data", {}).get("output", "")
+            if event_type == "on_tool_end":
+                tool_name = event.get("name", "tool")
+                # LangGraph on_tool_end events have run_id at the top level (unique UUID per tool call)
+                tool_id = event.get("run_id")
+                tool_output = event.get("data", {}).get("output", "")
 
-            if isinstance(tool_output, ToolMessage):
-                tool_output = tool_output.content
+                if isinstance(tool_output, ToolMessage):
+                    tool_output = tool_output.content
 
-            tool_output = _clean_tool_output(str(tool_output))
+                tool_output = _clean_tool_output(str(tool_output))
 
-            if tool_id not in tool_results_shown:
-                yield f"\n__TOOL_CALL_RESULT__:Tool '{tool_name}' returned: {tool_output}\n"
-                tool_results_shown.add(tool_id)
+                if tool_id not in tool_results_shown:
+                    yield f"\n__TOOL_CALL_RESULT__:Tool '{tool_name}' returned: {tool_output}\n"
+                    tool_results_shown.add(tool_id)
 
-        if event_type == "on_chain_end" and final_message is None:
-            event_name = event.get("name", "")
-            tags = event.get("tags", {})
-            if event_name in ("LangGraph", "") and "node" not in tags:
-                messages = event.get("data", {}).get("output", {}).get("messages", [])
-                if messages:
-                    final_message = _extract_final_message(messages)
-                    if final_message and verbose:
-                        final_index = last_printed_index + 1
-                        content_preview = " ".join(final_message.split())[:50]
-                        print(
-                            f"  [{final_index}] AIMessage: content='{content_preview}...'"
-                        )
-                        print(f"{'='*60}\n")
+            if event_type == "on_chain_end" and final_message is None:
+                event_name = event.get("name", "")
+                tags = event.get("tags", {})
+                if event_name in ("LangGraph", "") and "node" not in tags:
+                    messages = event.get("data", {}).get("output", {}).get("messages", [])
+                    if messages:
+                        final_message = _extract_final_message(messages)
+                        if final_message and verbose:
+                            final_index = last_printed_index + 1
+                            content_preview = " ".join(final_message.split())[:50]
+                            print(
+                                f"  [{final_index}] AIMessage: content='{content_preview}...'"
+                            )
+                            print(f"{'='*60}\n")
+    except Exception as e:
+        if "RateLimitError" in type(e).__name__ or "429" in str(e):
+            yield "\n__FINAL__:Azure OpenAI rate limit hit. Wait a minute and try again.\n"
+            return
+        raise
 
     if final_message:
         yield f"\n__FINAL__:{final_message}"
