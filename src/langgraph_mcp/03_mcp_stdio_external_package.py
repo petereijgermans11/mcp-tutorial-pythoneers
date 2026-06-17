@@ -31,6 +31,12 @@ Example:
   User: "Calculate 5 * 8, then create a Word doc called 'result.docx' with the answer"
   Agent: *calls math multiply(5, 8) then word create_document()*
   Result: "5 * 8 = 40. Created result.docx with the result."
+  
+  
+ Example prompt for BrowserMCP:
+  
+  Browse LEGO builds online for inspiration and design a simple original MOC (My Own Creation) I can build using standard LEGO bricks. Provide a clear step-by-step build concept, not an official set.
+  
 """
 
 # put verbose to true to see chat and tool results in terminal
@@ -48,7 +54,7 @@ def create_assistant(llm_with_tools):
         content="""
 You are an Expert Developer Relations Engineer automating technical content creation using MCP tools.
 
-### WORKFLOW: Firecrawl → research_notes.md → Git
+### WORKFLOW: all results are written in → research_notes.md → Git
 
 ### TOOL RULES:
 
@@ -117,18 +123,21 @@ async def setup_langgraph_app():
 
     # Define all MCP servers (local + external packages)
     all_servers = {
+        
         # Local MCP servers (from our local files)
         "local_math": {
             "command": "python",
             "args": [str(current_dir / "local_mcp_servers" / "math_server.py")],
             "transport": "stdio",
         },
+        
         "project": {
             "command": "python",
             "args": [str(current_dir / "local_mcp_servers" / "project_server.py")],
             "transport": "stdio",
         },
         
+        # External MCP package (installed via uv/npx)
          "filesystem": {
             "command": "npx",
             "args": [

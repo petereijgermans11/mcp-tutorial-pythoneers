@@ -53,12 +53,13 @@ You are an Expert Developer Relations Engineer automating technical content crea
 ### TOOL RULES:
 
 1. BROWSER MCP:
-   - User must Connect a DEDICATED Chrome tab — NOT the localhost chat tab.
-   - Workflow per action: browser_navigate → browser_wait (2) → browser_snapshot → browser_click/browser_type
+   - When the user asks to browse, search, or visit a website: IMMEDIATELY call browser tools.
+     Do NOT ask the user to connect first — just try browser_navigate and handle errors if they happen.
+   - Workflow: browser_navigate → browser_wait (2) → browser_snapshot → browser_click/browser_type
    - Always get refs from the latest browser_snapshot before typing or clicking.
-   - If browser_navigate works but a later tool fails with "No tab with given id":
-     the connected tab was closed, switched, or was the wrong tab. Tell the user to open a
-     new Chrome tab, click Connect there, and retry. Do NOT say the extension is disconnected.
+   - Use a dedicated Chrome tab (not localhost:8000). User connects via extension → Connect.
+   - If a tool fails with "No tab with given id" or connection error: then tell user to open a
+     new Chrome tab, click Connect, and retry.
    - Never close or manually interact with the connected tab during automation.
 
 2. GIT:
@@ -101,16 +102,36 @@ def build_graph(tools):
 def get_mcp_servers(current_dir: Path) -> dict:
     """Define all MCP servers (local + external packages)."""
     return {
+        
+        "browsermcp": {
+            "command": "npx",
+            "args": ["-y", "@browsermcp/mcp"],
+            "transport": "stdio",
+        },
+        
+        "filesystem": {
+            "command": "npx",
+            "args": [
+                "-y",
+                "@modelcontextprotocol/server-filesystem",
+                str(current_dir.parent.parent),
+            ],
+            "transport": "stdio",
+        },
+        
+        
         # "local_math": {
         #     "command": "python",
         #     "args": [str(current_dir / "local_mcp_servers" / "math_server.py")],
         #     "transport": "stdio",
         # },
+        
         # "project": {
         #     "command": "python",
         #     "args": [str(current_dir / "local_mcp_servers" / "project_server.py")],
         #     "transport": "stdio",
         # },
+        
         # "filesystem": {
         #     "command": "npx",
         #     "args": [
@@ -120,28 +141,27 @@ def get_mcp_servers(current_dir: Path) -> dict:
         #     ],
         #     "transport": "stdio",
         # },
+        
         # "git": {
         #     "command": "uvx",
         #     "args": ["mcp-server-git"],
         #     "transport": "stdio",
         # },
-        "browsermcp": {
-            "command": "npx",
-            "args": ["-y", "@browsermcp/mcp"],
-            "transport": "stdio",
-        },
+        
         # "ai-diagram-maker": {
         #     "command": "npx",
         #     "args": ["-y", "ai-diagram-maker-mcp@latest"],
         #     "env": {"ADM_API_KEY": os.getenv("ADM_API_KEY", "")},
         #     "transport": "stdio",
         # },
+        
         # "firecrawl-mcp": {
         #     "command": "npx",
         #     "args": ["-y", "firecrawl-mcp"],
         #     "env": {"FIRECRAWL_API_KEY": os.getenv("FIRECRAWL_API_KEY", "")},
         #     "transport": "stdio",
         # },
+        
         # "office_word": {
         #     "command": "uv",
         #     "args": ["tool", "run", "--from", "office-word-mcp-server", "word_mcp_server"],
