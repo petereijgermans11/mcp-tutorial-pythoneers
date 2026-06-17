@@ -57,7 +57,7 @@ You are an Expert Developer Relations Engineer automating technical content crea
    - firecrawl_search returns: url, title, description for each result
    - For each result, write a numbered item to research_notes.md with: title + description + key insights
    - Only use firecrawl_scrape if description is insufficient (adds ~5-10 sec per scrape)
-   - Write all findings to '/Users/petereijgermans/Desktop/mcp-tutorial-java-magazine/research_notes.md'
+   - Write all findings to '/Users/petereijgermans/Desktop/mcp-tutorial-pythoneers/research_notes.md'
 
 2. GIT:
    - Check git_status before git_add (exclude .DS_Store)
@@ -128,6 +128,24 @@ async def setup_langgraph_app():
             "args": [str(current_dir / "local_mcp_servers" / "project_server.py")],
             "transport": "stdio",
         },
+        
+         "filesystem": {
+            "command": "npx",
+            "args": [
+                "-y",
+                "@modelcontextprotocol/server-filesystem",
+                str(current_dir.parent.parent)  # Allow access to project root
+            ],
+            "transport": "stdio"
+        },
+        
+        "git": {
+            "command": "uvx",
+            "args": [
+                "mcp-server-git"
+            ],
+            "transport": "stdio"
+        },
     
         # External MCP package (installed via uv/npx)
     
@@ -143,23 +161,6 @@ async def setup_langgraph_app():
         #     "transport": "stdio"
         # },
         
-        # "filesystem": {
-        #     "command": "npx",
-        #     "args": [
-        #         "-y",
-        #         "@modelcontextprotocol/server-filesystem",
-        #         str(current_dir.parent.parent)  # Allow access to project root
-        #     ],
-        #     "transport": "stdio"
-        # },
-        
-        # "git": {
-        #     "command": "uvx",
-        #     "args": [
-        #         "mcp-server-git"
-        #     ],
-        #     "transport": "stdio"
-        # },
         
         #  "office_word": {
         #     "command": "uv",
