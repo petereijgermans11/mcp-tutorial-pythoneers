@@ -58,12 +58,9 @@ You are an Expert Developer Relations Engineer automating technical content crea
 
 ### TOOL RULES:
 
-1. FIRECRAWL:
-   - Use 'search' (limit: 5), never 'crawl'
-   - firecrawl_search returns: url, title, description for each result
-   - For each result, write a numbered item to research_notes.md with: title + description + key insights
-   - Only use firecrawl_scrape if description is insufficient (adds ~5-10 sec per scrape)
-   - Write all findings to '/Users/petereijgermans/Desktop/mcp-tutorial-pythoneers/research_notes.md'
+1. FILESYSTEM:
+   - Always read files before editing (filesystem is your memory)
+   - Write all outputs to research_notes.md in project root
 
 2. GIT:
    - Check git_status before git_add (exclude .DS_Store)
@@ -155,28 +152,6 @@ async def setup_langgraph_app():
             ],
             "transport": "stdio"
         },
-    
-        # External MCP package (installed via uv/npx)
-    
-        #  "firecrawl-mcp": {
-        #   "command": "npx",
-        #   "args": [
-        #      "-y",
-        #      "firecrawl-mcp"
-        #     ],
-        #    "env": {
-        #       "FIRECRAWL_API_KEY": firecrawl_api_key
-        #     },
-        #     "transport": "stdio"
-        # },
-        
-        
-        #  "office_word": {
-        #     "command": "uv",
-        #     "args": ["tool", "run", "--from", "office-word-mcp-server", "word_mcp_server"],
-        #     "transport": "stdio",
-        # },
-    
     }
 
     # Validate servers - only load ones that work
