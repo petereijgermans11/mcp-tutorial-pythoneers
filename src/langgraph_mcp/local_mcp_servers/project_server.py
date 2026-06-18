@@ -19,6 +19,7 @@ def _iter_project_files():
 @mcp.tool()
 def list_files() -> dict:
     """
+    Returns:
     Geeft een lijst van bestanden in het project (max 200, zonder .venv/node_modules).
     """
     files = sorted(_iter_project_files())
@@ -33,6 +34,7 @@ def list_files() -> dict:
 @mcp.tool()
 def project_stats() -> dict:
     """
+    Returns:
     Geeft basisstatistieken van het project.
     """
     files = list(_iter_project_files())
@@ -47,6 +49,8 @@ def project_stats() -> dict:
 @mcp.tool()
 def summarize_structure() -> str:
     """
+    
+    Returns:
     Geeft een globale samenvatting van de projectstructuur.
     """
     top_level = [p.name for p in PROJECT_ROOT.iterdir()]
@@ -61,6 +65,7 @@ def summarize_structure() -> str:
 @mcp.tool()
 def detect_risks() -> list[str]:
     """
+    Returns:
     Simpele heuristiek om mogelijke risico's te signaleren.
     """
     risks = []
