@@ -148,7 +148,9 @@ async def setup_langgraph_app():
         "git": {
             "command": "uvx",
             "args": [
-                "mcp-server-git"
+                "--with", "mcp<2",  # mcp-server-git uses the v1 decorator API
+                "mcp-server-git",
+                "--repository", str(current_dir.parent.parent),
             ],
             "transport": "stdio"
         },
