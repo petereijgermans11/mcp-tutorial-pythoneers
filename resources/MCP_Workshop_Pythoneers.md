@@ -1,7 +1,7 @@
 MCP & LangGraph Workshop
 
 
-PART 1
+## PART 1
 
 Connect to local MCP servers with Claude Desktop
 
@@ -54,7 +54,8 @@ What solutions can we suggest regarding the missing Word document? (just ideas)
 ___________________________________________________________
 
 
-#### Exercise 3: Is the agent limited to using only 1 tool call per question, or can it chain multiple tool calls together? Try asking a question that requires multiple operations, such as: "What is (3 + 4) * 2?" Observe how many tool calls are made. ___________________________________________________________
+#### Exercise 3: Is the agent limited to using only 1 tool call per question, or can it chain multiple tool calls together? Try asking a question that requires multiple operations, such as: "What is (3 + 4) * 2?" Observe how many tool calls are made. 
+___________________________________________________________
 
 
 
@@ -65,7 +66,8 @@ ___________________________________________________________
 
 
 
-#### Exercise 5: How does the Graph know which tool to call? Where is this information stored? What problem might arise if we have too many tools available? ___________________________________________________________
+#### Exercise 5: How does the Graph know which tool to call? Where is this information stored? What problem might arise if we have too many tools available?
+ ___________________________________________________________
 
 
 
@@ -81,7 +83,8 @@ This is a LangGraph ReAct agent that loads tools from local MCP servers running 
 Unlike PART 2, which uses direct Python functions, PART 3 uses tools exposed through @mcp.tool() decorators, demonstrating the transition from local tooling to MCP-based servers. These servers are fully compatible with standard MCP clients such as LangChain’s MultiServerMCPClient.
 
 
-#### Exercise 1: Compare the tools available in file 01.py vs file 02.py. Are they the same? What's the difference in how they're defined and loaded? ___________________________________________________________
+#### Exercise 1: Compare the tools available in file 01.py vs file 02.py. Are they the same? What's the difference in how they're defined and loaded? 
+___________________________________________________________
 
 
 
@@ -103,7 +106,14 @@ __________________________________________________________
 
 #### Exercise 5: see slide 26  build your own “project_server.py”
 
+Build a MCP server that understands the codebase of this project.
+This MCP server contains the following tools:
 
+- list_files()
+- list_python_files()
+- project_stats()
+- risk_analysis()
+- ect.....
 
 ## PART 4
 
@@ -115,11 +125,13 @@ __________________________________________________________
 LangGraph agent combining local MCP servers with external MCP packages (like office-word-mcp-server) via stdio. This file includes a FastAPI web interface with streaming chat. This example demonstrates how to integrate both locally developed MCP servers and external packages from the MCP ecosystem. User accesses FastAPI web interface at http://localhost:8000/chat or https://127.0.0.1:8000/chat
 
 
-#### Exercise 1: What is the danger of using external packages from MCP? What security considerations should you keep in mind when running external MCP servers? ___________________________________________________________
+#### Exercise 1: What is the danger of using external packages from MCP? What security considerations should you keep in mind when running external MCP servers? 
+___________________________________________________________
 
 
 
-#### Exercise 2.a: How many tool calls are loaded from the Word-mcp server? Check the console output when the server starts and scan the list of all the tools available from the office-word-mcp-server. Do you think the LLM has enough context for when to use what tool? ___________________________________________________________
+#### Exercise 2.a: How many tool calls are loaded from the Word-mcp server? Check the console output when the server starts and scan the list of all the tools available from the office-word-mcp-server. Do you think the LLM has enough context for when to use what tool? 
+___________________________________________________________
 
 
 
