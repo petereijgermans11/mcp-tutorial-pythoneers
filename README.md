@@ -12,7 +12,11 @@ This project demonstrates how to use **Model Context Protocol (MCP)** with **Lan
     cd mcp-tutorial-pythoneers
     ```
 
-1. Install Poetry:
+1. Install Python (3.12.x of hoger)
+ - Download via https://www.python.org/downloads/
+ - Check na installatie met: `python --version`    
+
+2. Install Poetry:
     ```bash
     # Simplest method (works on Windows/Mac/Linux)
     pip install poetry
@@ -27,18 +31,19 @@ This project demonstrates how to use **Model Context Protocol (MCP)** with **Lan
     curl -sSL https://install.python-poetry.org | python3 -
     ```
 
-2. Configure Poetry to create venv in project:
+3. Configure Poetry to create venv in project:
     ```bash
     poetry config virtualenvs.in-project true
     ```
 
-3. Update lock file and install:
+4. Update lock file and install:
     ```bash
     poetry lock
     poetry install
     ```
+5. Get VSCode Extension: Open VSCode, go to the extensions icon on the left, search for Python, and install the extension! from Microsoft.
 
-4. Select Python interpreter in VS Code:
+6. Select Python interpreter in VS Code:
     - Press `Ctrl+Shift+P` (or `Cmd+Shift+P` on Mac)
     - Type "Python: Select Interpreter"
     - Choose the `.venv` one from your project
